@@ -1,13 +1,12 @@
-### Import the data set
-###  More complex super learning algorithms
+### More complex super learning algorithms
 data<-read.csv(file=file.choose())
 data<-data[c(-1)]
 install.packages("SuperLearner")
 library(SuperLearner)
 remotes::install_github("ecpolley/SuperLearner")
-# Set a seed for reproducibility in this random sampling.
+##Set a seed for reproducibility in this random sampling.
 set.seed(1)
-train_obs = sample(nrow(data),6859*0.75 )
+train_obs = sample(nrow(data),6859*0.75)
 # X is our training sample.
 x_train = data[train_obs,c(1:34)]
 # Create a holdout set for evaluating model performance.
@@ -21,21 +20,23 @@ library(xgboost)
 sl_lib = c("SL.xgboost", "SL.randomForest",
            "SL.glmnet", "SL.nnet",
            "SL.ksvm","SL.bartMachine")
-sl = SuperLearner(Y = y_train, X = x_train, family = binomial(),
-                  SL.library =sl_lib)
-
+sl = SuperLearner(Y = y_train, X = x_train, family = binomial(),SL.library =sl_lib)
 pred = predict(sl, x_holdout, onlySL = TRUE)
 pred_all = predict(sl, data[,c(1:34)], onlySL = TRUE)
+### Display the predicted quality index via histogram
 hist(pred_all$pred, main="Histogram for Quality Index",
      xlab="Quality Index",
      border="black",
      col="royal blue",
      xlim=c(0,1),
      breaks=50)
+### Create predicted index based on probability
 pred_index=ifelse(round(pred$pred,2)>0.50,1,0)
+### Estimate F1 score
 install.packages("MLmetrics")
 library(MLmetrics)
 F1_Score(y_holdout,pred_index, positive = NULL)
+### Get confusion matrix
 install.packages("caret")
 library(caret)
 pred_index<-as.vector(pred_index)
