@@ -1,26 +1,12 @@
 #!/usr/bin/env python
 # coding: utf-8
 
-# ###  Step 1: Identify the specialties of the NYC doctor
-#         
-
-# In[ ]:
-
-
+####  Step 1: Identify the specialties of the NYC doctor
 import requests,re
 import pandas
 from bs4 import BeautifulSoup
 import time
-
-
-# In[ ]:
-
-
 import pandas as pd
-
-
-# In[ ]:
-
 
 def identify_specialities(base_url="https://www.ratemds.com/ny/newyork/"):
     l=[]
@@ -40,21 +26,7 @@ def identify_specialities(base_url="https://www.ratemds.com/ny/newyork/"):
     specialities.remove(None)
     return(specialities)      
 
-
-# In[ ]:
-
-
 specialities=identify_specialities(base_url="https://www.ratemds.com/ny/newyork/")
-
-
-# In[ ]:
-
-
-specialities
-
-
-# In[ ]:
-
 
 l=[]
 pages = [10,10,10,10,10,10,10,10,10,10,10,10,10]
@@ -96,42 +68,13 @@ for speciality,page in zip(specialities, pages):
                 d["Comment"]=None
             l.append(d)
 
-
-# In[ ]:
-
-
 df=pd.DataFrame(l)
-
-
-# In[ ]:
-
-
 df_new=df.drop_duplicates()
-
-
-# In[ ]:
-
-
 df_new.to_csv("all_specialities.csv")
 
-
-# In[ ]:
-
-
-import requests,re
-import pandas as pd
-from bs4 import BeautifulSoup
-import time
-import math
-
-
-# ### Step 2: Create dataframe for doctors that scapped online
-
-# In[ ]:
-
+### Step 2: Create dataframe for doctors that scapped online
 
 #Final code to extract list of all reviews in each doctor's page
-
 staff_value = []
 punctuality_value = []
 helpfulness_value = []
@@ -150,9 +93,7 @@ review_date = []
 #df = pd.read_csv(r'ratemd_all_specialities.csv', encoding='utf8')
 
 rows, col = df_new.shape
-
 base_url_start = str("https://www.")
-
 #Looping each doctor's link in df
 for i in range(rows):
     k = i+1
@@ -219,36 +160,9 @@ for i in range(rows):
         print(len(name), len(spec), len(star_rating), len(staff_value), len(punctuality_value), len(helpfulness_value),len(knowledge_value), len(comment), len(review_date), len(links))
 
 d ={'Name': name, 'Speciality' : spec, 'Star Rating': star_rating, 'Staff': staff_value, 'Punctuality': punctuality_value, 'Helpfulness': helpfulness_value,'Knowledge': knowledge_value, 'comment': comment,'Rating Usefulness' : rating_usefulness, 'Review Date': review_date,'Link': links}
-
-
-# In[ ]:
-
-
-d.keys()
-
-
-# In[ ]:
-
-
 print(len(d['Name']), len(d['Speciality']), len(d['Star Rating']))
-
-
-# In[ ]:
-
-
 ### data set for all reviews 
 k=list(d.keys())
 v=list(d.values())
-
-
-# In[ ]:
-
-
 df_all=df = pd.DataFrame(d)
-
-
-# In[ ]:
-
-
 df_all.to_csv(r'review_dataset.csv', encoding='utf8')
-
